@@ -1,5 +1,6 @@
+import { Toaster } from '@/components/ui/toaster'
 import './globals.css'
-import { Inter } from 'next/font/google'
+import { Hachi_Maru_Pop } from 'next/font/google'
 
 export const metadata = {
   metadataBase: new URL('https://postgres-prisma.vercel.app'),
@@ -8,10 +9,10 @@ export const metadata = {
     'A simple Next.js app with Vercel Postgres as the database and Prisma as the ORM',
 }
 
-const inter = Inter({
-  variable: '--font-inter',
+const hachiMaruPop = Hachi_Maru_Pop({
   subsets: ['latin'],
   display: 'swap',
+  weight: '400',
 })
 
 export default function RootLayout({
@@ -20,8 +21,11 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.variable}>{children}</body>
+    <html lang="ja">
+      <body className={hachiMaruPop.className}>
+        {children}
+        <Toaster />
+      </body>
     </html>
   )
 }

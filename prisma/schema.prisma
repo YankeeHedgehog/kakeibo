@@ -18,3 +18,30 @@ model users {
   image     String
   createdAt DateTime @default(now())
 }
+
+model Kakeibo {
+  id         String      @id @unique @default(uuid())
+  cashFlows  CashFlow[]  // 1対多の関係
+  categories Category[]  // 1対多の関係
+}
+
+model Category {
+  id          String   @id @unique @default(uuid())
+  name        String
+  icon        String
+  updated_at  DateTime @default(now())
+  kakeiboId   String   // 外部キー
+  kakeibo     Kakeibo  @relation(fields: [kakeiboId], references: [id])
+  cashflow    CashFlow[]
+}
+
+model CashFlow {
+  id          String   @id @unique @default(uuid())
+  timestamp   DateTime @default(now())
+  price       Decimal
+  memo        String?
+  kakeiboId   String   // 外部キー
+  categoryId  String?  // カテゴリがオプショナルで設定可能
+  kakeibo     Kakeibo  @relation(fields: [kakeiboId], references: [id])
+  category    Category? @relation(fields: [categoryId], references: [id])
+}
