@@ -1,19 +1,34 @@
-'use client'
-
 import { Button } from '@/components/ui/button'
 import formatDateToJapanese from '@/utils/format-date-to-jp'
+import { endOfMonth, startOfMonth } from 'date-fns'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
+import prisma from '@/lib/prisma'
 
 export const dynamic = 'force-dynamic'
 
-export default function HomePage() {
+type Props = {
+  params: {
+    kakeiboId: string
+  }
+}
+
+export default async function HomePage({ params }: Props) {
   const today = new Date()
+  const { kakeiboId } = await params
 
-  const params = useParams<{ kakeiboId: string }>()
-
-  console.log(params.kakeiboId)
+  const monthPayment = await prisma.cashFlow.aggregate({
+    _sum: {
+      price: true,
+    },
+    where: {
+      timestamp: {
+        gte: startOfMonth(today),
+        lte: endOfMonth(today),
+      },
+      kakeiboId: kakeiboId,
+    },
+  })
 
   return (
     <div className="max-w-[600px]">
@@ -24,12 +39,9 @@ export default function HomePage() {
       <main className="flex flex-col mt-8 items-center gap-1">
         <p className="flex w-full justify-between text-2xl rounded-2xl p-3 bg-red-300">
           <span>今月の出費</span>
-          <span>148,00円</span>
+          <span>{Number(monthPayment._sum.price)}円</span>
         </p>
-        <Link
-          href={`${params.kakeiboId}/payment`}
-          className="mt-3 underline text-xl"
-        >
+        <Link href={`${kakeiboId}/payment`} className="mt-3 underline text-xl">
           入力する!
         </Link>
         <Image
