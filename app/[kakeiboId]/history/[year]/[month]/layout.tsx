@@ -1,15 +1,18 @@
 import prisma from '@/lib/prisma'
 import { endOfMonth, startOfMonth } from 'date-fns'
+import { ReactNode } from 'react'
 
 type Props = {
+  children: ReactNode
   params: {
     kakeiboId: string
+    year: string
+    month: string
   }
 }
 
-export default async function Page({ params }: Props) {
-  const today = new Date()
-  const { kakeiboId } = await params
+export default async function Page({ children, params }: Props) {
+  const { kakeiboId, year, month } = await params
 
   // 毎月のカテゴリーごとの合計
   const histories = await prisma.cashFlow.groupBy({
@@ -22,8 +25,8 @@ export default async function Page({ params }: Props) {
     },
     where: {
       timestamp: {
-        gte: startOfMonth(today),
-        lte: endOfMonth(today),
+        gte: startOfMonth(new Date(Date.UTC(Number(year), Number(month) - 1))),
+        lte: endOfMonth(new Date(Date.UTC(Number(year), Number(month)))),
       },
       kakeiboId: kakeiboId,
     },
@@ -31,9 +34,8 @@ export default async function Page({ params }: Props) {
 
   return (
     <>
-      {histories.map((history) => (
-        <div key={history.categoryId}>{Number(history._sum.price)}</div>
-      ))}
+      current month: {month}
+      {children}
     </>
   )
 }
