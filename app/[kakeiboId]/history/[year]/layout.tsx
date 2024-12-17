@@ -2,6 +2,13 @@ import prisma from '@/lib/prisma'
 import { endOfMonth, startOfMonth } from 'date-fns'
 import { ReactNode } from 'react'
 
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
+
 type Props = {
   children: ReactNode
   params: {
@@ -33,11 +40,10 @@ export default async function Page({ children, params }: Props) {
 
   return (
     <>
-      current year: {year} <br />
-      {/* {histories.map((history) => (
-        <div key={history.categoryId}>{Number(history._sum.price)}</div>
-      ))} */}
-      {children}
+      <Accordion type="single" collapsible className="w-full mt-3">
+        <span className="bg-orange-500 w-full p-3">{year}</span>
+        {children}
+      </Accordion>
     </>
   )
 }

@@ -54,13 +54,7 @@ export default async function HomePage({ params }: Props) {
         <div id="nav-group" className="flex flex-row gap-3">
           <Button>ホーム</Button>
           <Button>
-            <Link
-              href={`${kakeiboId}/history/${today.getFullYear()}/${
-                today.getMonth() + 1
-              }`}
-            >
-              履歴
-            </Link>
+            <Link href={`${kakeiboId}/history/list/`}>履歴</Link>
           </Button>
         </div>
       </main>

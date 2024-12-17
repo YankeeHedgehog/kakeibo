@@ -4,12 +4,13 @@ import { endOfMonth, startOfMonth } from 'date-fns'
 type Props = {
   params: {
     kakeiboId: string
+    year: string
+    month: string
   }
 }
 
 export default async function Page({ params }: Props) {
-  const today = new Date()
-  const { kakeiboId } = await params
+  const { kakeiboId, year, month } = await params
 
   // 毎月のカテゴリーごとの合計
   const histories = await prisma.cashFlow.groupBy({
@@ -22,15 +23,19 @@ export default async function Page({ params }: Props) {
     },
     where: {
       timestamp: {
-        gte: startOfMonth(today),
-        lte: endOfMonth(today),
+        gte: startOfMonth(new Date(Date.UTC(Number(year), Number(month) - 1))),
+        lte: endOfMonth(new Date(Date.UTC(Number(year), Number(month)))),
       },
       kakeiboId: kakeiboId,
     },
   })
 
+  console.log(new Date(Date.UTC(Number(year), Number(month) - 1)))
+  console.log(new Date(Date.UTC(Number(year), Number(month))))
+
   return (
     <>
+      current month: {month}
       {histories.map((history) => (
         <div key={history.categoryId}>{Number(history._sum.price)}</div>
       ))}
