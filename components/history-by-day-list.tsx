@@ -1,5 +1,5 @@
 import prisma from '@/lib/prisma'
-import { endOfMonth, startOfMonth } from 'date-fns'
+import { endOfMonth, format, startOfMonth } from 'date-fns'
 import Link from 'next/link'
 
 export default async function HistoryByDayList({
@@ -17,7 +17,7 @@ export default async function HistoryByDayList({
     const endDate = endOfMonth(new Date(Date.UTC(Number(year), Number(month)))) // 翌月の月初日
 
     // Prisma groupByクエリで日ごとの支出を集計
-    const dailyExpenses = await prisma.cashFlow.groupBy({
+    const expenses = await prisma.cashFlow.groupBy({
       by: ['timestamp'], // タイムスタンプごとにグループ化
       _sum: { price: true },
       where: {
@@ -29,10 +29,25 @@ export default async function HistoryByDayList({
       orderBy: { timestamp: 'asc' },
     })
 
-    return dailyExpenses.map((entry) => ({
-      day: new Date(entry.timestamp).getDate(), // 日付部分を取得
-      total: entry._sum.price || 0,
-    }))
+    // 日付ごとに集計
+    const dailyTotals = expenses.reduce((acc, curr) => {
+      const date = new Date(curr.timestamp)
+      const dayKey = format(date, 'yyyy-MM-dd')
+
+      if (!acc[dayKey]) {
+        acc[dayKey] = {
+          day: date.getUTCDate(),
+          total: 0,
+          dateString: dayKey,
+        }
+      }
+
+      acc[dayKey].total += curr._sum.price?.toNumber() || 0
+      return acc
+    }, {} as Record<string, { day: number; total: number; dateString: string }>)
+
+    // オブジェクトを配列に変換し、日付でソート
+    return Object.values(dailyTotals).sort((a, b) => a.day - b.day)
   }
 
   const dailyExpenses = await fetchDailyExpenses(Number(year), Number(month))
