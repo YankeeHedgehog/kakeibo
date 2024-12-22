@@ -37,6 +37,8 @@ import { cn } from '@/lib/utils'
 
 // import { NewCashFlowType } from '@/app/[kakeiboId]/payment/page'
 import { Category } from '@prisma/client'
+import Link from 'next/link'
+import { useParams, useRouter } from 'next/navigation'
 
 export default function Payment({
   categories,
@@ -46,6 +48,9 @@ export default function Payment({
   categories: Category[]
   createNewCashFlow: (cashFlow: any) => void
 }) {
+  const kakeiboId = useParams().kakeiboId
+  const router = useRouter()
+
   const CashFlowSchema = z.object({
     timestamp: z
       .date()
@@ -71,13 +76,16 @@ export default function Payment({
       title: '送信',
       description: <>{JSON.stringify(values, null, 2)}</>,
     })
+    router.push(`/${kakeiboId}`)
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <header className="grid grid-cols-3 items-center">
-          <ArrowLeft />
+          <Link href={`/${kakeiboId}`}>
+            <ArrowLeft />
+          </Link>
           <p className="text-center text-xl">入力</p>
           <div className="ml-auto">
             <Button variant="ghost" type="submit">

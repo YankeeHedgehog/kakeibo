@@ -2,7 +2,7 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ArrowLeft, ChartPie, Menu } from 'lucide-react'
-import { usePathname, useRouter } from 'next/navigation'
+import { useParams, usePathname, useRouter } from 'next/navigation'
 import { ReactNode } from 'react'
 
 type Props = {
@@ -11,9 +11,12 @@ type Props = {
 
 export default function HistoryLayout({ children }: Props) {
   const router = useRouter()
+  const params = useParams()
 
   const listOrChart = usePathname().split('/').slice(-1)[0]
   const tabsDefaultValue = listOrChart === 'chart' ? 'chart' : 'list'
+
+  const kakeiboId = params.kakeiboId
 
   return (
     <>
@@ -26,10 +29,16 @@ export default function HistoryLayout({ children }: Props) {
             className="flex justify-center mt-3"
           >
             <TabsList>
-              <TabsTrigger value="list" onClick={() => router.push('list')}>
+              <TabsTrigger
+                value="list"
+                onClick={() => router.push(`/${kakeiboId}/history/list/`)}
+              >
                 <Menu />
               </TabsTrigger>
-              <TabsTrigger value="chart" onClick={() => router.push('chart')}>
+              <TabsTrigger
+                value="chart"
+                onClick={() => router.push(`/${kakeiboId}/history/chart/`)}
+              >
                 <ChartPie />
               </TabsTrigger>
             </TabsList>

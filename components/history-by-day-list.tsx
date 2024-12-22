@@ -1,5 +1,6 @@
 import prisma from '@/lib/prisma'
 import { endOfMonth, startOfMonth } from 'date-fns'
+import Link from 'next/link'
 
 export default async function HistoryByDayList({
   year,
@@ -39,10 +40,16 @@ export default async function HistoryByDayList({
   return (
     <>
       {dailyExpenses.map((dailyExpenses) => (
-        <div key={dailyExpenses.day} className="flex justify-between w-full">
+        <Link
+          href={`list/${year}-${month}-${dailyExpenses.day
+            .toString()
+            .padStart(2, '0')}`}
+          key={dailyExpenses.day}
+          className="flex justify-between w-full"
+        >
           <span>{`${month}月${dailyExpenses.day}日`}</span>
           <span> {`${dailyExpenses.total.toString()}円`}</span>
-        </div>
+        </Link>
       ))}
     </>
   )

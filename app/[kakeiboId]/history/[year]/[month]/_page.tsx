@@ -10,7 +10,7 @@ type Props = {
 }
 
 export default async function Page({ params }: Props) {
-  const { kakeiboId, year, month } = await params
+  const { kakeiboId, year, month } = params
 
   // 毎月のカテゴリーごとの合計
   const histories = await prisma.cashFlow.groupBy({
