@@ -165,8 +165,11 @@ export default function Payment({
                         className="w-full border-dotted border-2 border-gray-400 p-2 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-300"
                         type="number"
                         placeholder="¥ 0"
-                        {...field}
-                        onChange={(e) => field.onChange(Number(e.target.value))}
+                        value={field.value === 0 ? '' : field.value}
+                        onChange={(e) => {
+                          const value = e.target.value
+                          field.onChange(value === '' ? '' : Number(value))
+                        }}
                       />
                     </FormControl>
                     <FormMessage />

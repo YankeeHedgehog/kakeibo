@@ -36,7 +36,7 @@ export default async function HistoryByDayList({
 
       if (!acc[dayKey]) {
         acc[dayKey] = {
-          day: date.getUTCDate(),
+          day: date.getDate(),
           total: 0,
           dateString: dayKey,
         }
