@@ -5,7 +5,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 
-import HistoryByDayList from '@/components/history-by-day-list'
+import HistoryChartByCategory from '@/components/history-chart-by-category'
 import prisma from '@/lib/prisma'
 
 export async function fetchGroupedYearsAndMonths() {
@@ -14,6 +14,9 @@ export async function fetchGroupedYearsAndMonths() {
     orderBy: {
       timestamp: 'desc',
     },
+    _sum: {
+      price: true,
+    },
   })
 
   // グループ化したデータを整形
@@ -21,6 +24,7 @@ export async function fetchGroupedYearsAndMonths() {
     const date = new Date(entry.timestamp)
     const year = date.getFullYear()
     const month = date.getMonth() + 1
+    const price = Number(entry._sum.price) || 0
 
     // 既に存在するyearを探す
     let yearGroup = acc.find((group) => group.year === year)
@@ -31,37 +35,57 @@ export async function fetchGroupedYearsAndMonths() {
     }
 
     // 月がまだ追加されていない場合は追加
-    if (!yearGroup.months.find((m) => m.month === month)) {
-      yearGroup.months.push({ month })
+    const existingMonth = yearGroup.months.find((m) => m.month === month)
+    if (!existingMonth) {
+      yearGroup.months.push({ month, price })
+    } else {
+      existingMonth.price += price
     }
 
     return acc
-  }, [] as { year: number; months: { month: number }[] }[])
+  }, [] as { year: number; months: { month: number; price: number }[] }[])
 
   return formatted
 }
 
-export default async function HistoryChartPage() {
+type Props = {
+  params: {
+    kakeiboId: string
+  }
+}
+export default async function HistoryChartPage({ params }: Props) {
+  const { kakeiboId } = await params
+
   const yearAndMonths = await fetchGroupedYearsAndMonths()
 
+  const createDataset = () => {
+    return
+  }
+
   return (
-    <div className="px-3">
-      <h1>Years and Months</h1>
+    <div>
       {yearAndMonths.map((date) => (
         <div className="" key={date.year}>
-          <h2>year: {date.year}</h2>
+          <h2 className="w-auto bg-primary text-primary-foreground px-3 py-3">
+            {date.year}年
+          </h2>
           <Accordion type="single" collapsible>
             {date.months.map((month) => (
               <AccordionItem
                 key={month.month}
                 value={`${date.year}-${month.month}`}
+                className="bg-secondary text-primary-foreground px-3 py-3"
               >
                 <AccordionTrigger className="flex justify-between w-full">
                   <span>{`${month.month}月`}</span>
-                  <span></span>
+                  <span className="ml-auto mr-2">{`${month.price}円`}</span>
                 </AccordionTrigger>
                 <AccordionContent>
-                  <HistoryByDayList year={date.year} month={month.month} />
+                  <HistoryChartByCategory
+                    year={date.year}
+                    month={month.month}
+                    kakeiboId={kakeiboId}
+                  />
                 </AccordionContent>
               </AccordionItem>
             ))}
@@ -71,3 +95,10 @@ export default async function HistoryChartPage() {
     </div>
   )
 }
+
+const dataset = [
+  { name: 'a', value: 1000 },
+  { name: 'b', value: 1500 },
+  { name: 'c', value: 2000 },
+  { name: 'd', value: 2500 },
+]

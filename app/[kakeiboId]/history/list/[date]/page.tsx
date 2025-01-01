@@ -1,11 +1,7 @@
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion'
+import Icon from '@/components/icon'
 import prisma from '@/lib/prisma'
 import { endOfDay, startOfDay } from 'date-fns'
+import dynamicIconImports from 'lucide-react/dynamicIconImports'
 
 type Props = {
   params: {
@@ -15,7 +11,7 @@ type Props = {
 }
 
 export default async function ItemsPage({ params }: Props) {
-  const { kakeiboId, date } = params
+  const { kakeiboId, date } = await params
 
   const newDate = new Date(date)
 
@@ -36,40 +32,36 @@ export default async function ItemsPage({ params }: Props) {
     },
   })
 
+  const cashsSum = cashs.reduce(
+    (sum, element) => sum + Number(element.price),
+    0
+  )
+
   return (
     <>
-      <p className="bg-yellow-500 px-3 py-2 text-white">{year}</p>
-      <Accordion type="single" collapsible>
-        <AccordionItem value={`1`}>
-          <AccordionTrigger className="bg-orange-500 px-3 py-4 text-white flex justify-between">
-            <span>{`${month}/1 ~ ${month}/31`}</span>
-            <span className="ml-auto mr-3">
-              {cashs.reduce((sum, item) => sum + item.price.toNumber(), 0)}円
-            </span>
-          </AccordionTrigger>
-          <AccordionContent>
-            {`${year}/${month}/${day}`}
-            {cashs.map((cash) => (
-              <div key={cash.id}>
-                <span>
-                  {cash.price.toString()}
-                  <br />
-                  {cash.category?.name}
-                  <br />
-                </span>
-                <span>
-                  {cash.timestamp.toString()}
-                  <br />
-                </span>
-                <span>
-                  {cash.memo}
-                  <br />
-                </span>
+      <p className="flex justify-between w-auto bg-primary text-primary-foreground px-3 py-3">
+        <span>{`${year}/${month}/${day}`}</span>
+        <span>{cashsSum}円</span>
+      </p>
+      <div>
+        {cashs.map((cash) => (
+          <div
+            key={cash.id}
+            className="m-1 px-2 py-1 w-auto border-dotted border-2 border-primary rounded-md"
+          >
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-1">
+                <Icon
+                  name={cash.category?.icon as keyof typeof dynamicIconImports}
+                />
+                {cash.category?.name}
               </div>
-            ))}
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+              {`${cash.price.toString()}円`}
+            </div>
+            <span>メモ: {cash.memo}</span>
+          </div>
+        ))}
+      </div>
     </>
   )
 }

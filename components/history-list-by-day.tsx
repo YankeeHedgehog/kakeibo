@@ -5,11 +5,17 @@ import Link from 'next/link'
 export default async function HistoryByDayList({
   year,
   month,
+  kakeiboId,
 }: {
   year: number
   month: number
+  kakeiboId: string
 }) {
-  const fetchDailyExpenses = async (year: number, month: number) => {
+  const fetchDailyExpenses = async (
+    year: number,
+    month: number,
+    kakeiboId: string
+  ) => {
     'use server'
     const startDate = startOfMonth(
       new Date(Date.UTC(Number(year), Number(month) - 1))
@@ -25,6 +31,7 @@ export default async function HistoryByDayList({
           gte: startDate,
           lt: endDate,
         },
+        kakeiboId: kakeiboId,
       },
       orderBy: { timestamp: 'asc' },
     })
@@ -50,20 +57,24 @@ export default async function HistoryByDayList({
     return Object.values(dailyTotals).sort((a, b) => a.day - b.day)
   }
 
-  const dailyExpenses = await fetchDailyExpenses(Number(year), Number(month))
+  const dailyExpenses = await fetchDailyExpenses(
+    Number(year),
+    Number(month),
+    kakeiboId
+  )
 
   return (
     <>
-      {dailyExpenses.map((dailyExpenses) => (
+      {dailyExpenses.map((dailyExpense) => (
         <Link
-          href={`list/${year}-${month}-${dailyExpenses.day
+          href={`list/${year}-${month}-${dailyExpense.day
             .toString()
             .padStart(2, '0')}`}
-          key={dailyExpenses.day}
+          key={dailyExpense.day}
           className="flex justify-between w-full"
         >
-          <span>{`${month}月${dailyExpenses.day}日`}</span>
-          <span> {`${dailyExpenses.total.toString()}円`}</span>
+          <span>{`${month}月${dailyExpense.day}日`}</span>
+          <span> {`${dailyExpense.total.toString()}円`}</span>
         </Link>
       ))}
     </>

@@ -1,6 +1,6 @@
 import Payment from '@/components/payment'
 import { CashFlow } from '@prisma/client'
-import { Decimal, Omit } from '@prisma/client/runtime/library'
+import { Omit } from '@prisma/client/runtime/library'
 import { createCashFlow, getCategories } from '../actions'
 
 type Props = {

@@ -37,7 +37,7 @@ export default async function HomePage({ params }: Props) {
         <p className="text-xl">{formatDateToJapanese(today)}</p>
       </header>
       <main className="flex flex-col mt-8 items-center gap-1">
-        <p className="flex w-full justify-between text-2xl rounded-2xl p-3 bg-red-300">
+        <p className="flex w-full justify-between text-2xl rounded-2xl p-3 bg-primary text-primary-foreground">
           <span>今月の出費</span>
           <span>{Number(monthPayment._sum.price)}円</span>
         </p>

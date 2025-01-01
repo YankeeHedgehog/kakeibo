@@ -73,8 +73,8 @@ export default function Payment({
   const onSubmit = async (values: z.infer<typeof CashFlowSchema>) => {
     await createNewCashFlow(values)
     toast({
-      title: '送信',
-      description: <>{JSON.stringify(values, null, 2)}</>,
+      title: `支出追加: ${values.price}`,
+      description: <>{`メモ: ${values.memo}`}</>,
     })
     router.push(`/${kakeiboId}`)
   }
@@ -119,7 +119,7 @@ export default function Payment({
                             <Button
                               variant={'outline'}
                               className={cn(
-                                'w-full border-dotted border-2 border-gray-400 p-2 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-300',
+                                'w-full border-dotted border-2 border-primary p-2 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary',
                                 !field.value && 'text-muted-foreground'
                               )}
                             >
@@ -162,7 +162,7 @@ export default function Payment({
                     <FormLabel>金額</FormLabel>
                     <FormControl>
                       <Input
-                        className="w-full border-dotted border-2 border-gray-400 p-2 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        className="w-full border-dotted border-2 border-primary p-2 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
                         type="number"
                         placeholder="¥ 0"
                         value={field.value === 0 ? '' : field.value}
@@ -187,7 +187,7 @@ export default function Payment({
                     <Select onValueChange={field.onChange} defaultValue="">
                       {/* {field.value} */}
                       <FormControl>
-                        <SelectTrigger className="w-full border-dotted border-2 border-gray-400 p-2 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                        <SelectTrigger className="w-full border-dotted border-2 border-primary p-2 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary">
                           <SelectValue placeholder="カテゴリーを選択" />
                         </SelectTrigger>
                       </FormControl>
@@ -217,7 +217,7 @@ export default function Payment({
                     <FormLabel>メモ</FormLabel>
                     <FormControl>
                       <Textarea
-                        className="w-full border-dotted border-2 border-gray-400 p-2 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        className="w-full border-dotted border-2 border-primary p-2 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary"
                         placeholder="メモを書く"
                         {...field}
                       />

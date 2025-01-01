@@ -101,20 +101,6 @@ async function main() {
       })
     )
   )
-
-  // ユーザーの作成
-  await prisma.users.upsert({
-    where: { email: 'stey@vercel.com' },
-    update: {},
-    create: {
-      name: 'Steven Tey',
-      email: 'stey@vercel.com',
-      image:
-        'https://images.ctfassets.net/e5382hct74si/4QEuVLNyZUg5X6X4cW4pVH/eb7cd219e21b29ae976277871cd5ca4b/profile.jpg',
-    },
-  })
-
-  console.log('データ作成が完了しました。')
 }
 
 main()
