@@ -53,6 +53,7 @@ type Props = {
 }
 
 export default async function HistoryListPage({ kakeiboId }: Props) {
+  const currentDay = new Date()
   const yearAndMonths = await fetchGroupedYearsAndMonths()
 
   return (
@@ -62,7 +63,13 @@ export default async function HistoryListPage({ kakeiboId }: Props) {
           <h2 className="w-auto bg-primary text-primary-foreground px-3 py-3">
             {date.year}年
           </h2>
-          <Accordion type="single" collapsible>
+          <Accordion
+            type="single"
+            collapsible
+            defaultValue={`${currentDay.getFullYear()}-${
+              currentDay.getUTCMonth() + 1
+            }`}
+          >
             {date.months.map((month) => (
               <AccordionItem
                 key={month.month}

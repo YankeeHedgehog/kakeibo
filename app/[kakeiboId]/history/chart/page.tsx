@@ -55,12 +55,7 @@ type Props = {
 }
 export default async function HistoryChartPage({ params }: Props) {
   const { kakeiboId } = await params
-
   const yearAndMonths = await fetchGroupedYearsAndMonths()
-
-  const createDataset = () => {
-    return
-  }
 
   return (
     <div>
@@ -95,10 +90,3 @@ export default async function HistoryChartPage({ params }: Props) {
     </div>
   )
 }
-
-const dataset = [
-  { name: 'a', value: 1000 },
-  { name: 'b', value: 1500 },
-  { name: 'c', value: 2000 },
-  { name: 'd', value: 2500 },
-]

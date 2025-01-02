@@ -49,7 +49,7 @@ const renderCustomizedLabel = ({
       textAnchor={x > cx ? 'start' : 'end'}
       dominantBaseline="central"
     >
-      {`${payload.name} ${(percent * 100).toFixed(0)}%`}
+      {payload.name}
     </text>
   )
 }
@@ -73,6 +73,7 @@ export default function HistoryChartGroupbyMonthly({
         outerRadius={80}
         fill="#8884d8"
         dataKey="value"
+        isAnimationActive={false}
       >
         {data.map((entry, index) => (
           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
