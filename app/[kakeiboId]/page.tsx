@@ -8,9 +8,7 @@ import prisma from '@/lib/prisma'
 export const dynamic = 'force-dynamic'
 
 type Props = {
-  params: {
-    kakeiboId: string
-  }
+  params: Promise<{ kakeiboId: string }>
 }
 
 export default async function HomePage({ params }: Props) {

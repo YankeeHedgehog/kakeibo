@@ -8,7 +8,7 @@ import {
 import HistoryByDayList from '@/components/history-list-by-day'
 import prisma from '@/lib/prisma'
 
-export async function fetchGroupedYearsAndMonths() {
+async function fetchGroupedYearsAndMonths() {
   const result = await prisma.cashFlow.groupBy({
     by: ['timestamp'], // タイムスタンプを元にグループ化
     orderBy: {
@@ -49,10 +49,11 @@ export async function fetchGroupedYearsAndMonths() {
 }
 
 type Props = {
-  kakeiboId: string
+  params: Promise<{ kakeiboId: string }>
 }
 
-export default async function HistoryListPage({ kakeiboId }: Props) {
+export default async function HistoryListPage({ params }: Props) {
+  const { kakeiboId } = await params
   const currentDay = new Date()
   const yearAndMonths = await fetchGroupedYearsAndMonths()
 

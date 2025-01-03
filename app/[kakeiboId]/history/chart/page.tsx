@@ -8,7 +8,7 @@ import {
 import HistoryChartByCategory from '@/components/history-chart-by-category'
 import prisma from '@/lib/prisma'
 
-export async function fetchGroupedYearsAndMonths() {
+async function fetchGroupedYearsAndMonths() {
   const result = await prisma.cashFlow.groupBy({
     by: ['timestamp'], // タイムスタンプを元にグループ化
     orderBy: {
@@ -49,9 +49,7 @@ export async function fetchGroupedYearsAndMonths() {
 }
 
 type Props = {
-  params: {
-    kakeiboId: string
-  }
+  params: Promise<{ kakeiboId: string }>
 }
 export default async function HistoryChartPage({ params }: Props) {
   const { kakeiboId } = await params

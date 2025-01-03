@@ -4,9 +4,7 @@ import { Omit } from '@prisma/client/runtime/library'
 import { createCashFlow, getCategories } from '../actions'
 
 type Props = {
-  params: {
-    kakeiboId: string
-  }
+  params: Promise<{ kakeiboId: string }>
 }
 
 export default async function PaymentPage({ params }: Props) {

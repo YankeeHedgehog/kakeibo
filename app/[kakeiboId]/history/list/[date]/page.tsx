@@ -4,10 +4,7 @@ import { endOfDay, startOfDay } from 'date-fns'
 import dynamicIconImports from 'lucide-react/dynamicIconImports'
 
 type Props = {
-  params: {
-    kakeiboId: string
-    date: string
-  }
+  params: Promise<{ kakeiboId: string; date: string }>
 }
 
 export default async function ItemsPage({ params }: Props) {
