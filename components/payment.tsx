@@ -36,16 +36,18 @@ import { toast } from '@/hooks/use-toast'
 import { cn } from '@/lib/utils'
 
 // import { NewCashFlowType } from '@/app/[kakeiboId]/payment/page'
-import { Category } from '@prisma/client'
+import { Category, User } from '@prisma/client'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 
 export default function Payment({
+  users,
   categories,
   createNewCashFlow,
 }: //
 {
   categories: Category[]
+  users: User[]
   createNewCashFlow: (cashFlow: any) => void
 }) {
   const kakeiboId = useParams().kakeiboId
@@ -59,6 +61,7 @@ export default function Payment({
     price: z.number(), // 金額は正の数
     memo: z.string(),
     categoryId: z.string().uuid().nullable(), // オプショナルなカテゴリID
+    userId: z.string().uuid().nullable(),
   })
 
   const form = useForm<z.infer<typeof CashFlowSchema>>({
@@ -202,6 +205,36 @@ export default function Payment({
                     <FormDescription>
                       カテゴリーを選択してください。
                       {/* <Link href="/examples/forms">email settings</Link>. */}
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* <!-- Category Field --> */}
+              <FormField
+                control={form.control}
+                name="userId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>ユーザー</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue="">
+                      {/* {field.value} */}
+                      <FormControl>
+                        <SelectTrigger className="w-full border-dotted border-2 border-primary p-2 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary">
+                          <SelectValue placeholder="ユーザーを選択" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {users.map((user) => (
+                          <SelectItem key={user.id} value={user.id}>
+                            {user.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>
+                      ユーザーを選択してください。
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

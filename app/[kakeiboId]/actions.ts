@@ -12,6 +12,14 @@ export async function getCategories(kakeiboId: string) {
   })
 }
 
+export async function getUsers(kakeiboId: string) {
+  return await prisma.user.findMany({
+    where: {
+      kakeiboId: kakeiboId,
+    },
+  })
+}
+
 export async function createCashFlow(
   cashFlow: NewCashFlowType,
   kakeiboId: string
